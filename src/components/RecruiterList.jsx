@@ -4,6 +4,7 @@ import './RecruiterList.css';
 const RecruiterList = ({ jobs, manualRecruiters, onAddManualRecruiter }) => {
     const [showAddForm, setShowAddForm] = useState(false);
     const [newRec, setNewRec] = useState({ name: '', company: '', email: '', linkedin: '' });
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Merge recruiters from jobs and manual list
     const recruitersFromJobs = jobs.flatMap(job =>
@@ -32,7 +33,12 @@ const RecruiterList = ({ jobs, manualRecruiters, onAddManualRecruiter }) => {
         });
     };
 
-    const allRecruiters = checkDuplicates(rawRecruiters);
+    const duplicateCheckedRecruiters = checkDuplicates(rawRecruiters);
+
+    // Filter by company name
+    const allRecruiters = duplicateCheckedRecruiters.filter(rec =>
+        rec.company?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const [copyStatus, setCopyStatus] = useState('');
 
@@ -55,9 +61,21 @@ const RecruiterList = ({ jobs, manualRecruiters, onAddManualRecruiter }) => {
             <header className="page-header">
                 <div className="header-with-action">
                     <h1>Recruiter <span className="highlight">Directory</span></h1>
-                    <button className="add-rec-btn" onClick={() => setShowAddForm(!showAddForm)}>
-                        {showAddForm ? 'Close Form' : '+ Add Recruiter'}
-                    </button>
+                    <div className="header-actions">
+                        <div className="recruiter-search-container">
+                            <span className="search-icon">🔍</span>
+                            <input
+                                type="text"
+                                placeholder="Search by company..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="recruiter-search-input"
+                            />
+                        </div>
+                        <button className="add-rec-btn" onClick={() => setShowAddForm(!showAddForm)}>
+                            {showAddForm ? 'Close Form' : '+ Add Recruiter'}
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -144,7 +162,7 @@ const RecruiterList = ({ jobs, manualRecruiters, onAddManualRecruiter }) => {
                     ))
                 ) : (
                     <div className="empty-state glass-panel">
-                        <p>No recruiters found. Add one manually or track them via job applications.</p>
+                        <p>{searchTerm ? `No recruiters found for "${searchTerm}"` : 'No recruiters found. Add one manually or track them via job applications.'}</p>
                     </div>
                 )}
             </div>
