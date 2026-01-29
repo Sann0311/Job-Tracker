@@ -8,10 +8,30 @@ const JobForm = ({ onAddJob }) => {
         jobLink: '',
         status: 'Applied',
         appliedDate: new Date().toISOString().split('T')[0],
-        recruiterName: '',
-        recruiterEmail: '',
-        recruiterLinkedin: ''
+        recruiters: [{ name: '', email: '', linkedin: '', id: Date.now().toString() }]
     });
+
+    const handleAddRecruiter = () => {
+        setFormData({
+            ...formData,
+            recruiters: [...formData.recruiters, { name: '', email: '', linkedin: '', id: Date.now().toString() }]
+        });
+    };
+
+    const handleRemoveRecruiter = (id) => {
+        if (formData.recruiters.length <= 1) return;
+        setFormData({
+            ...formData,
+            recruiters: formData.recruiters.filter(r => r.id !== id)
+        });
+    };
+
+    const handleRecruiterChange = (id, field, value) => {
+        setFormData({
+            ...formData,
+            recruiters: formData.recruiters.map(r => r.id === id ? { ...r, [field]: value } : r)
+        });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -32,9 +52,7 @@ const JobForm = ({ onAddJob }) => {
             jobLink: '',
             status: 'Applied',
             appliedDate: new Date().toISOString().split('T')[0],
-            recruiterName: '',
-            recruiterEmail: '',
-            recruiterLinkedin: ''
+            recruiters: [{ name: '', email: '', linkedin: '', id: Date.now().toString() }]
         });
     };
 
@@ -91,34 +109,51 @@ const JobForm = ({ onAddJob }) => {
                         onChange={(e) => setFormData({ ...formData, appliedDate: e.target.value })}
                     />
                 </div>
-                <div className="input-group">
-                    <label>Recruiter Name</label>
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        value={formData.recruiterName}
-                        onChange={(e) => setFormData({ ...formData, recruiterName: e.target.value })}
-                    />
-                </div>
-                <div className="input-group">
-                    <label>Recruiter Email</label>
-                    <input
-                        type="email"
-                        placeholder="email@example.com"
-                        value={formData.recruiterEmail}
-                        onChange={(e) => setFormData({ ...formData, recruiterEmail: e.target.value })}
-                    />
-                </div>
-                <div className="input-group">
-                    <label>Recruiter LinkedIn</label>
-                    <input
-                        type="url"
-                        placeholder="https://linkedin.com/in/..."
-                        value={formData.recruiterLinkedin}
-                        onChange={(e) => setFormData({ ...formData, recruiterLinkedin: e.target.value })}
-                    />
-                </div>
             </div>
+
+            <div className="recruiters-section">
+                <div className="section-header">
+                    <label>Recruiters</label>
+                    <button type="button" className="add-rec-btn-small" onClick={handleAddRecruiter}>
+                        + Add Another
+                    </button>
+                </div>
+
+                {formData.recruiters.map((rec, index) => (
+                    <div key={rec.id} className="recruiter-input-row glass-panel">
+                        <div className="rec-fields">
+                            <input
+                                type="text"
+                                placeholder="Name"
+                                value={rec.name}
+                                onChange={(e) => handleRecruiterChange(rec.id, 'name', e.target.value)}
+                            />
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                value={rec.email}
+                                onChange={(e) => handleRecruiterChange(rec.id, 'email', e.target.value)}
+                            />
+                            <input
+                                type="url"
+                                placeholder="LinkedIn"
+                                value={rec.linkedin}
+                                onChange={(e) => handleRecruiterChange(rec.id, 'linkedin', e.target.value)}
+                            />
+                        </div>
+                        {formData.recruiters.length > 1 && (
+                            <button
+                                type="button"
+                                className="remove-rec-btn"
+                                onClick={() => handleRemoveRecruiter(rec.id)}
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+                ))}
+            </div>
+
             <button type="submit" className="submit-btn">Add Application</button>
         </form>
     );

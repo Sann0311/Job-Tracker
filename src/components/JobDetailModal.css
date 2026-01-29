@@ -15,9 +15,11 @@
 
 .modal-content {
     width: 90%;
-    max-width: 600px;
+    max-width: 650px;
     padding: 2.5rem;
     position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
     animation: slideUp 0.3s ease;
 }
 
@@ -66,6 +68,97 @@
     margin-bottom: 1rem;
     display: block;
     color: var(--text-muted);
+}
+
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.add-rec-modal-btn {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    border: 1px solid var(--glass-border);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.recruiter-list-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.recruiter-display-card {
+    padding: 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+}
+
+.rec-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.rec-name {
+    font-weight: 600;
+    color: white;
+}
+
+.rec-links {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+}
+
+.rec-email {
+    color: var(--text-muted);
+}
+
+.rec-linkedin-link {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.recruiter-edit-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--glass-border);
+}
+
+.rec-edit-fields {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+}
+
+.rec-edit-fields input {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    color: white;
+    font-size: 0.8rem;
+}
+
+.remove-rec-btn-small {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.7rem;
 }
 
 .info-grid {
@@ -270,5 +363,9 @@
     .actions-right button,
     .actions-right select {
         width: 100%;
+    }
+
+    .rec-edit-fields {
+        grid-template-columns: 1fr;
     }
 }

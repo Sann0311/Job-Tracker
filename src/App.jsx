@@ -10,7 +10,19 @@ import './index.css';
 function App() {
   const [jobs, setJobs] = useState(() => {
     const savedJobs = localStorage.getItem('jobTracker_jobs');
-    return savedJobs ? JSON.parse(savedJobs) : [];
+    const parsed = savedJobs ? JSON.parse(savedJobs) : [];
+    // Migration: ensure each job has a 'recruiters' array
+    return parsed.map(job => ({
+      ...job,
+      recruiters: job.recruiters || (job.recruiterName || job.recruiterEmail || job.recruiterLinkedin ? [
+        {
+          name: job.recruiterName || '',
+          email: job.recruiterEmail || '',
+          linkedin: job.recruiterLinkedin || '',
+          id: `legacy-${job.id}`
+        }
+      ] : [])
+    }));
   });
 
   const [manualRecruiters, setManualRecruiters] = useState(() => {

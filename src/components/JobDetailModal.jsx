@@ -22,6 +22,27 @@ const JobDetailModal = ({ job, onClose, onUpdateStatus, onMarkEmailed, onToggleR
         }
     };
 
+    const handleAddRecruiter = () => {
+        setEditData({
+            ...editData,
+            recruiters: [...(editData.recruiters || []), { name: '', email: '', linkedin: '', id: Date.now().toString() }]
+        });
+    };
+
+    const handleRemoveRecruiter = (id) => {
+        setEditData({
+            ...editData,
+            recruiters: editData.recruiters.filter(r => r.id !== id)
+        });
+    };
+
+    const handleRecruiterChange = (id, field, value) => {
+        setEditData({
+            ...editData,
+            recruiters: editData.recruiters.map(r => r.id === id ? { ...r, [field]: value } : r)
+        });
+    };
+
     const handleSave = () => {
         onUpdateJob(job.id, editData);
         setIsEditing(false);
@@ -85,24 +106,56 @@ const JobDetailModal = ({ job, onClose, onUpdateStatus, onMarkEmailed, onToggleR
                     </div>
 
                     <div className="info-section">
-                        <label>Recruiter & Follow-up</label>
-                        <div className="info-grid">
-                            <div className="info-item">
-                                <span className="info-label">Recruiter Name:</span>
-                                {isEditing ? (
-                                    <input value={editData.recruiterName} onChange={e => setEditData({ ...editData, recruiterName: e.target.value })} />
+                        <div className="section-header-row">
+                            <label>Recruiters & Contacts</label>
+                            {isEditing && (
+                                <button type="button" className="add-rec-modal-btn" onClick={handleAddRecruiter}>
+                                    + Add Contact
+                                </button>
+                            )}
+                        </div>
+
+                        <div className="recruiter-list-modal">
+                            {isEditing ? (
+                                editData.recruiters && editData.recruiters.map((rec) => (
+                                    <div key={rec.id} className="recruiter-edit-row glass-panel">
+                                        <div className="rec-edit-fields">
+                                            <input
+                                                placeholder="Name"
+                                                value={rec.name}
+                                                onChange={(e) => handleRecruiterChange(rec.id, 'name', e.target.value)}
+                                            />
+                                            <input
+                                                placeholder="Email"
+                                                value={rec.email}
+                                                onChange={(e) => handleRecruiterChange(rec.id, 'email', e.target.value)}
+                                            />
+                                            <input
+                                                placeholder="LinkedIn"
+                                                value={rec.linkedin}
+                                                onChange={(e) => handleRecruiterChange(rec.id, 'linkedin', e.target.value)}
+                                            />
+                                        </div>
+                                        <button className="remove-rec-btn-small" onClick={() => handleRemoveRecruiter(rec.id)}>✕</button>
+                                    </div>
+                                ))
+                            ) : (
+                                job.recruiters && job.recruiters.length > 0 ? (
+                                    job.recruiters.map((rec, idx) => (
+                                        <div key={rec.id || idx} className="recruiter-display-card glass-panel">
+                                            <div className="rec-main">
+                                                <span className="rec-name">{rec.name || 'Unnamed Contact'}</span>
+                                                <div className="rec-links">
+                                                    {rec.email && <span className="rec-email">{rec.email}</span>}
+                                                    {rec.linkedin && <a href={rec.linkedin} target="_blank" rel="noopener noreferrer" className="rec-linkedin-link">LinkedIn 🔗</a>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
                                 ) : (
-                                    <span className="info-value">{job.recruiterName || 'None'}</span>
-                                )}
-                            </div>
-                            <div className="info-item">
-                                <span className="info-label">Recruiter Email:</span>
-                                {isEditing ? (
-                                    <input value={editData.recruiterEmail} onChange={e => setEditData({ ...editData, recruiterEmail: e.target.value })} />
-                                ) : (
-                                    <span className="info-value">{job.recruiterEmail || 'None'}</span>
-                                )}
-                            </div>
+                                    <span className="muted">No recruiters listed.</span>
+                                )
+                            )}
                         </div>
                     </div>
 

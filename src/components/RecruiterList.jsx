@@ -6,16 +6,14 @@ const RecruiterList = ({ jobs, manualRecruiters, onAddManualRecruiter }) => {
     const [newRec, setNewRec] = useState({ name: '', company: '', email: '', linkedin: '' });
 
     // Merge recruiters from jobs and manual list
-    const recruitersFromJobs = jobs
-        .filter(job => job.recruiterName || job.recruiterEmail || job.recruiterLinkedin)
-        .map(job => ({
-            name: job.recruiterName,
-            email: job.recruiterEmail,
-            linkedin: job.recruiterLinkedin,
+    const recruitersFromJobs = jobs.flatMap(job =>
+        (job.recruiters || []).map(rec => ({
+            ...rec,
             company: job.company,
-            id: `job-${job.id}`,
+            id: `job-${job.id}-${rec.id}`,
             source: 'application'
-        }));
+        }))
+    );
 
     const rawRecruiters = [...manualRecruiters.map(r => ({ ...r, source: 'manual' })), ...recruitersFromJobs];
 
